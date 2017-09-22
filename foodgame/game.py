@@ -28,7 +28,7 @@ class Game():
 
         self.camera = Camera(self)
         self.world = World(self)
-        self.player = Player(self) # entity automatically created and added to world]
+        self.player = Player(self) # entity automatically created and added to world
         self.event_log = EventLog(self)
 
         for x in range(10):
