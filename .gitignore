@@ -33,7 +33,7 @@ htmlcov/
 nosetests.xml
 coverage.xml
 
-# Sphinx documentation
-docs/_build/
+# Doxygen documentation
+doc/
 
 .DS_Store
