@@ -6,6 +6,7 @@ from .world import World
 from .asset_manager import AssetManager
 from .camera import Camera
 from foodgame.util import Point
+from .event_log import EventLog
 
 from foodgame.entities import EntityStatic
 
@@ -28,7 +29,7 @@ class Game():
         self.camera = Camera(self)
         self.world = World(self)
         self.player = Player(self) # entity automatically created and added to world]
-
+        self.event_log = EventLog(self)
 
         for x in range(10):
             for y in range(10):
@@ -45,7 +46,7 @@ class Game():
             self.fps_time += dt
             if self.fps_time > 1000:
                 self.fps_time = 0
-                print(self.fps)
+                self.event_log.write(self.fps)
                 self.fps = 0
             else:
                 self.fps += 1
@@ -76,4 +77,5 @@ class Game():
     def draw(self, dt):
         self.screen.fill((0,0,0))
         self.world.draw(dt)
+        self.event_log.draw()
         pygame.display.flip()
