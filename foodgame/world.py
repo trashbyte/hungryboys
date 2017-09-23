@@ -71,13 +71,12 @@ class World():
 
 
     ## Draws all on-screen entities in the world.
+    # @todo FIXME: currently draws everything on top of each other (needs priority)
     def draw(self, dt):
-        #FIXME: currently draws everything on top of each other (needs priority)
-
         x1 = self.game.camera.pos.x
-        x2 = x1 + 40
+        x2 = x1 + self.game.ui_manager.num_tiles[0]
         y1 = self.game.camera.pos.y
-        y2 = y1 + 40
+        y2 = y1 + self.game.ui_manager.num_tiles[1]
 
         for x in range(x1, x2):
             for y in range(y1, y2):

@@ -13,7 +13,7 @@ class EventLog():
         self.log_length = 10
 
         ## A list of all messages passed ever.
-        #FIXME currently stores every message ever. Should be replaced with a deque.
+        # @todo FIXME: currently stores every message ever. Should be replaced with a deque.
         self.message_list = []
 
         ## The last x messages
@@ -35,4 +35,4 @@ class EventLog():
     def draw(self):
         for index, message in enumerate(list(self.last_messages)):
             self.currently_printing = self.log_font.render(message, 1, (255,255,255))
-            self.game.screen.blit(self.currently_printing, (660,(15*index)))
+            self.game.screen.blit(self.currently_printing, (self.game.window_size[0]-480, (15*index)))

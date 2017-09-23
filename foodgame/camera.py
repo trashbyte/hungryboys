@@ -21,10 +21,10 @@ class Camera():
         temp_y = self.pos.y
         while e_pos.x < temp_x + 5:
             temp_x -= 1
-        while e_pos.x > temp_x + 30:
+        while e_pos.x > temp_x + self.game.ui_manager.num_tiles[0] - 5:
             temp_x += 1
         while e_pos.y < temp_y + 5:
             temp_y -= 1
-        while e_pos.y > temp_y + 30:
+        while e_pos.y > temp_y + self.game.ui_manager.num_tiles[1] - 5:
             temp_y += 1
         self.pos = Point(temp_x, temp_y)
