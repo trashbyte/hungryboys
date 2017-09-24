@@ -44,7 +44,7 @@ class Game():
         self.world = World(self)
         self.player = Player(self) # entity automatically created and added to world
         self.event_log = EventLog(self)
-        self.ui_manager = UIManager(self) # must be initialized after camera        
+        self.ui_manager = UIManager(self) # must be initialized after camera
 
         # temp: add grass so we can see what we're doing
         for x in range(25):
@@ -86,6 +86,7 @@ class Game():
                 self.screen = pygame.display.set_mode(self.window_size, HWSURFACE|DOUBLEBUF|RESIZABLE)
                 self.ui_manager.update()
                 self.event_log.write("Tiles: %s" % str(self.ui_manager.num_tiles))
+                self.event_log.update()
                 self.camera.track_player(self.player.entity.pos)
             elif event.type == pygame.KEYDOWN:
                 if (event.key == pygame.K_UP or event.key == pygame.K_DOWN
@@ -107,4 +108,4 @@ class Game():
         self.world.draw(dt)
         self.event_log.draw()
         self.ui_manager.draw()
-        pygame.display.flip()
+        pygame.display.flip()    

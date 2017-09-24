@@ -6,6 +6,7 @@ class AssetManager():
 
     
     @staticmethod
+    ## Loads sprites from memory and prepares them with convert()
     def load():
         # tiles
         AssetManager.tiles["uninitialized"] = pygame.image.load("assets/default/tiles/uninitialized.png")
@@ -23,6 +24,7 @@ class AssetManager():
         AssetManager.ui["bottom-bar"].convert()
 
 
+    ## Get a tile image
     @staticmethod
     def get_tile(name):
         if AssetManager.tiles[name]:
@@ -31,6 +33,7 @@ class AssetManager():
             return AssetManager.tiles["missing"]
 
 
+    ## Get a ui image
     @staticmethod
     def get_ui(name):
         return AssetManager.ui[name]
