@@ -7,10 +7,10 @@
     <tab type="modules" visible="yes" title="" intro=""/>
     <tab type="namespacelist" visible="yes" title="" intro=""/>
     <tab type="user" url="namespacemembers.html" visible="yes" title="Namespace Members"/>
+    <tab type="classindex" visible="$ALPHABETICAL_INDEX" title="Classes"/> 
     <tab type="hierarchy" visible="yes" title="" intro=""/>
-    <tab type="classindex" visible="$ALPHABETICAL_INDEX" title=""/> 
-    <tab type="classmembers" visible="yes" title="" intro=""/>
-    <tab type="filelist" visible="yes" title="" intro=""/>
+    <tab type="classmembers" visible="yes" title="Member Index" intro=""/>
+    <tab type="filelist" visible="yes" title="Files" intro=""/>
   </navindex>
 
   <!-- Layout definition for a class page -->
