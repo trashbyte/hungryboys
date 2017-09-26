@@ -12,11 +12,13 @@ class EventLog():
         ## How many messages to put onscreen.
         self.log_length = 10
 
-        ## A list of all messages passed ever.
-        # @todo FIXME: currently stores every message ever. Should be replaced with a deque.
-        self.message_list = []
+        ## How many messages to store before oldest are deleted.
+        self.log_history = 1000
 
-        ## The last x messages
+        ## The complete list of messages stored in memory.
+        self.message_list = collections.deque("", self.log_history)
+
+        ## The last few messages to display onscreen.
         self.last_messages = collections.deque("", self.log_length)
 
         ## The font used to render messages.
