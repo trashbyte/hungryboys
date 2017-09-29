@@ -37,3 +37,8 @@ class UIManager():
             AssetManager.get_ui("bottom-bar"),
             (self.game.window_size[0]-24, self.game.window_size[1]-24),
             (48, 0, 24, 24) )
+
+        time_surface = AssetManager.fonts["monospace"].render(
+            "%02d:%02d:%02d" % (floor(self.game.game_time / 3600) % 24, floor((self.game.game_time % 3600) / 60), floor(self.game.game_time % 60)),
+            1, (255,255,255))
+        self.game.screen.blit(time_surface, (self.game.window_size[0]-480, 0))

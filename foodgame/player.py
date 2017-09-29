@@ -31,3 +31,4 @@ class Player():
             newpos = newpos + Point(1, 0)
         self.game.world.move(self.entity, newpos)
         self.game.camera.track_player(self.entity.pos)
+        self.game.pass_time(1)

@@ -3,6 +3,7 @@ import pygame
 class AssetManager():
     tiles = {}
     ui = {}
+    fonts = {}
 
     
     @staticmethod
@@ -21,6 +22,9 @@ class AssetManager():
         # ui
         AssetManager.ui["bottom-bar"] = pygame.image.load("assets/default/ui/bottom-bar.png")
         AssetManager.ui["bottom-bar"].convert()
+
+        # fonts
+        AssetManager.fonts["monospace"] = pygame.font.SysFont("monospace", 15)
 
 
     @staticmethod

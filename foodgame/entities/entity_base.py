@@ -10,6 +10,7 @@ class EntityBase():
 
 
     def update(self, dt): pass
+    def pass_time(self, seconds): pass
 
 
     def draw(self):

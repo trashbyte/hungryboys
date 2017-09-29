@@ -1,4 +1,6 @@
-import pygame,sys,collections
+import pygame, sys, collections
+
+from .asset_manager import AssetManager
 
 
 ## An on-screen message log to write to instead of writing to the terminal like *monsters*
@@ -22,7 +24,7 @@ class EventLog():
         self.last_messages = collections.deque("", self.log_length)
 
         ## The font used to render messages.
-        self.log_font = pygame.font.SysFont("monospace", 15)
+        self.log_font = AssetManager.fonts["monospace"]
     
 
     ## Adds a message to the log.
@@ -37,4 +39,4 @@ class EventLog():
     def draw(self):
         for index, message in enumerate(list(self.last_messages)):
             self.currently_printing = self.log_font.render(message, 1, (255,255,255))
-            self.game.screen.blit(self.currently_printing, (self.game.window_size[0]-480, (15*index)))
+            self.game.screen.blit(self.currently_printing, (self.game.window_size[0]-480, 30+(15*index)))

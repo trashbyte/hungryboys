@@ -20,7 +20,6 @@ from foodgame.entities import EntityStatic
 # @todo TODO: InputManager
 # @todo TODO: Remappable controls
 # @todo TODO: Config file
-# @todo TODO: In-game time
 # @todo TODO: Hold move key to run
 class Game():
     ## Constructor for Game
@@ -37,6 +36,7 @@ class Game():
         self.last_update = pygame.time.get_ticks()
         self.fps = 0
         self.fps_time = 0
+        self.game_time = 60*58
 
         AssetManager.load()
 
@@ -99,6 +99,7 @@ class Game():
     # Only called when the player moves or performs an action.
     def pass_time(self, seconds):
         self.world.pass_time(seconds)
+        self.game_time += seconds
 
 
     ## Draws game components to the screen.
