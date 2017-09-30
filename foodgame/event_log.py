@@ -50,11 +50,8 @@ class EventLog():
         self.log_x = self.game.window_size[0]-self.log_width
 
 
-    ## Draws the messages currently in the deque to the screen. Called from Game#draw.
-    # @todo TODO: figure out onscreen object layering so the event log doesn't draw its own background. UI manager should.
+    ## Draws the messages currently in the deque to the screen. Called from Game's draw.
     def draw(self):
-        SpriteSlicer.draw(self.game, "bottom-bar", self.log_x, self.log_y, self.log_width,
-            self.message_height*self.log_length+5) #the +5 creates a bottom margin
         for index, message in enumerate(list(self.last_messages)):
             self.currently_printing = self.log_font.render(message, 0, (255,255,255))
             self.game.screen.blit(self.currently_printing, (self.log_x,

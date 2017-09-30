@@ -1,134 +1,179 @@
 import pygame
 from .asset_manager import AssetManager
-from math import ceil
+from math import floor
 
-## The size in pixels of the tile's corner segments.
-TILE_CORNER_SIZE = 12
-## The width of the blank wall segments.
-TILE_WALL_SIZE = 13
-## The width/height of the source sprite.
-TILE_BASE_DIMENSIONS = 48
-
-
-## A sprite generated from sliced images.
+## Utility for drawing dynamically-scaled sprites
 class SpriteSlicer():
+    ## A dictionary of tileset names and their individual block sizes-
+    # This way we could have sprites at different resolutions or scales or somethin
+    tile_sizes = {"white-line": 12}
 
-
-    ## Draws a sliced sprite.
-    # @param game The game to draw in.
-    # @param tile The specific tile/file from AssetManager to use.
-    # @param x_size The width of the desired sprite.
-    # @param y_size The height of the desired sprite.
-    # @param x_position The x position of the sprite's top-left corner.
-    # @param y_position The y position of the sprite's top-left corner.
-    @staticmethod
-    def draw(game, tile, x_position, y_position, x_size, y_size, ):
-        ## The saved image for cutting.
-        # Used instead of AssetManager.get_ui for speed.
-        tile_block = AssetManager.get_ui(tile)
-        ## blit to the game's screen, to avoid reevaluating game.screen.blit each time
+    ## Draws a sprite from pieces.
+    #@param game The game being drawn to.
+    #@param tile The tileset to use.
+    # @param x_position The x coordinate to use as the sprite's top-left corner
+    # @param y_position The sprite's y coordinate
+    # @param width The sprite's desired width in tiles
+    # @param height The sprite's height in tiles
+    def draw(game, tile, x_position, y_position, width, height):
+        #Blit sprite to received game- Saved here to avoid constantly evaluating
+        #game.screen
         draw_to_screen = game.screen.blit
-        ## The size in pixels of the "empty" middle segment
-        middle_block_size = TILE_BASE_DIMENSIONS-TILE_CORNER_SIZE*2
-        ## How many rows of whole middle blocks fit
-        whole_middle_rows = int((y_size-TILE_CORNER_SIZE*2)/middle_block_size)
-        ## How many columns fit
-        whole_middle_columns = int((x_size-TILE_CORNER_SIZE*2)/middle_block_size)
-        ## How many pixels to make the last partial row
-        extra_bottom_pixels = (y_size-TILE_CORNER_SIZE*2-whole_middle_rows*middle_block_size)
-        ## How many partial pixels to put at the end of each row
-        extra_right_pixels = (x_size-TILE_CORNER_SIZE*2-whole_middle_columns*middle_block_size)
+        #Similar, to avoid pestering the asset manager
+        sprite_image = AssetManager.get_ui(tile)
+        #The size of individual tiles in that unsliced image.
+        tile_size = SpriteSlicer.tile_sizes[tile]
 
-        #Draw top strip
-        #Top left corner
-        draw_to_screen(
-            tile_block,
-            (x_position, y_position),
-            (0,0,TILE_CORNER_SIZE,TILE_CORNER_SIZE) )
-        #If width is greater than the two corners, go over the middle and fill with wall.
-        if x_size > TILE_CORNER_SIZE*2:
-            for i in range(ceil((x_size-2*TILE_CORNER_SIZE)/TILE_WALL_SIZE)):
-                draw_to_screen(
-                    tile_block,
-                    (i*TILE_WALL_SIZE+TILE_CORNER_SIZE+x_position, y_position),
-                    (TILE_CORNER_SIZE,0,TILE_WALL_SIZE,TILE_CORNER_SIZE) )
-        #Top right corner
-        draw_to_screen(
-            tile_block,
-            (x_position+(x_size-TILE_CORNER_SIZE), y_position),
-            (TILE_BASE_DIMENSIONS-TILE_CORNER_SIZE,0,TILE_CORNER_SIZE,TILE_CORNER_SIZE) )
+        width=int(width)
+        height=int(height)
 
-        #Draw middle strip... If there is a middle strip.
-        if y_size > TILE_CORNER_SIZE*2:
-            #Draw left wall
-            for i in range(ceil((y_size-2*TILE_CORNER_SIZE)/TILE_WALL_SIZE) ):
-                draw_to_screen(
-                    tile_block,
-                    (x_position, y_position+TILE_CORNER_SIZE+TILE_WALL_SIZE*i),
-                    (0, TILE_CORNER_SIZE, TILE_CORNER_SIZE, TILE_WALL_SIZE) )
-            #Draw middle fill. Only drawn if there is actually any middle to fill.
-            ## The number of complete rows of filler in the middle of the desired box.
-            if x_size > TILE_CORNER_SIZE*2:
-                #For each complete middle row
-                for i in range(whole_middle_rows):
-                    #Draw full-size boxes until there's no longer enough width for another
-                    for j in range(whole_middle_columns):
-                        draw_to_screen(
-                            tile_block,
-                            (x_position+TILE_CORNER_SIZE+j*middle_block_size,
-                                y_position+TILE_CORNER_SIZE+i*middle_block_size),
-                            (TILE_CORNER_SIZE,TILE_CORNER_SIZE,middle_block_size,middle_block_size) )
-                    #Draw vertical strip to cover remainder, if there's a remaining bit
-                    if extra_right_pixels > 0:
-                        draw_to_screen(
-                            tile_block,
-                            (x_position+TILE_CORNER_SIZE+whole_middle_columns*middle_block_size,
-                                y_position+TILE_CORNER_SIZE+i*middle_block_size),
-                            (TILE_CORNER_SIZE,TILE_CORNER_SIZE,
-                                extra_right_pixels,middle_block_size))
 
-                #Remaining bottom strip
-                if extra_bottom_pixels > 0:
-                    #for each full-block-wide segment
-                    for i in range(whole_middle_columns):
-                        draw_to_screen(
-                            tile_block,
-                            (x_position+TILE_CORNER_SIZE+i*middle_block_size,
-                                y_position+TILE_CORNER_SIZE+whole_middle_rows*middle_block_size),
-                            (TILE_CORNER_SIZE,TILE_CORNER_SIZE,middle_block_size,extra_bottom_pixels) )
-                #for the last bottom-right corner of the middle fill
-                    draw_to_screen(
-                        tile_block,
-                        (x_position+TILE_CORNER_SIZE+whole_middle_columns*middle_block_size,
-                            y_position+TILE_CORNER_SIZE+whole_middle_rows*middle_block_size),
-                        (TILE_CORNER_SIZE,TILE_CORNER_SIZE,extra_right_pixels,extra_bottom_pixels) )
+        #If 1x1, draw single tile
+        if width<=1 and height<=1:
+            draw_to_screen(sprite_image, (x_position,y_position),
+                (tile_size*3,tile_size*3, tile_size,tile_size))
 
-        #Draw the right wall if it exists
-        for i in range(ceil((y_size-TILE_CORNER_SIZE*2)/TILE_WALL_SIZE) ):
-            draw_to_screen(
-                tile_block,
-                (x_position+TILE_CORNER_SIZE+whole_middle_columns*middle_block_size+extra_right_pixels,
-                    y_position+TILE_CORNER_SIZE+i*TILE_WALL_SIZE),
-                (TILE_BASE_DIMENSIONS-TILE_CORNER_SIZE,TILE_CORNER_SIZE,
-                    TILE_CORNER_SIZE,TILE_WALL_SIZE))
+        #If horizontal line
+        elif height<=1 and width>1:
+            #draw left cap
+            draw_to_screen(sprite_image, (x_position,y_position),
+                (0,tile_size*3,tile_size,tile_size))
+            #draw right cap
+            draw_to_screen(sprite_image, (x_position+tile_size*(width-1),y_position),
+                (tile_size*2,tile_size*3,tile_size,tile_size))
+            #draw middle strip
+            for i in range(width-2):
+                draw_to_screen(sprite_image, (x_position+tile_size*(i+1), y_position),
+                    (tile_size,tile_size*3,tile_size,tile_size))
 
-        #Draw bottom
-        #Bottom left corner
-        draw_to_screen(
-            tile_block,
-            (x_position, y_position+y_size-TILE_CORNER_SIZE),
-            (0, TILE_BASE_DIMENSIONS-TILE_CORNER_SIZE, TILE_CORNER_SIZE, TILE_CORNER_SIZE) )
-        #If bottom wall exists, print it
-        if x_size > TILE_CORNER_SIZE*2:
-            for i in range(ceil((x_size-2*TILE_CORNER_SIZE)/TILE_WALL_SIZE)):
-                draw_to_screen(
-                    tile_block,
-                    (i*TILE_WALL_SIZE+TILE_CORNER_SIZE+x_position, y_position+y_size-TILE_CORNER_SIZE),
-                    (TILE_CORNER_SIZE,TILE_BASE_DIMENSIONS-TILE_CORNER_SIZE,
-                        TILE_WALL_SIZE,TILE_CORNER_SIZE) )
-        #Bottom right corner
-        draw_to_screen(
-            tile_block,
-            (x_position+x_size-TILE_CORNER_SIZE,y_position+y_size-TILE_CORNER_SIZE),
-            (TILE_BASE_DIMENSIONS-TILE_CORNER_SIZE,TILE_BASE_DIMENSIONS-TILE_CORNER_SIZE,
-                TILE_CORNER_SIZE,TILE_CORNER_SIZE))
+
+        #If vertical line
+        elif height>1 and width<=1:
+            #draw top cap
+            draw_to_screen(sprite_image, (x_position,y_position),
+                (tile_size*3,0,tile_size,tile_size))
+            #draw bottom cap
+            draw_to_screen(sprite_image, (x_position,y_position+tile_size*(height-1)),
+                (tile_size*3,tile_size*2,tile_size,tile_size))
+            #draw middle strip
+            for i in range(height-2):
+                draw_to_screen(sprite_image, (x_position, y_position+tile_size*(i+1)),
+                    (tile_size*3,tile_size,tile_size,tile_size))
+
+        #If multidimensional
+        else:
+            #First, draw corners
+            #top left
+            draw_to_screen(sprite_image, (x_position,y_position),
+                (0,0,tile_size,tile_size))
+            #top right
+            draw_to_screen(sprite_image, (x_position+tile_size*(width-1),y_position),
+                (tile_size*2,0,tile_size,tile_size))
+            #bottom left
+            draw_to_screen(sprite_image, (x_position,y_position+tile_size*(height-1)),
+                (0,tile_size*2,tile_size,tile_size))
+            #bottom right
+            draw_to_screen(sprite_image, (x_position+tile_size*(width-1),
+                y_position+tile_size*(height-1)),
+                (tile_size*2,tile_size*2,tile_size,tile_size))
+
+            #Next do the edges- Use long bar as much as possible, fill gaps with singles.
+            #Top side
+            whole_fourwalls=floor((width-2)/4)
+            for i in range(whole_fourwalls):
+                draw_to_screen(sprite_image, 
+                    (x_position+tile_size+tile_size*i*4,y_position),
+                    (0,tile_size*5,tile_size*4,tile_size))
+            for i in range(int((width-2)-whole_fourwalls*4)):
+                draw_to_screen(sprite_image,
+                    (x_position+tile_size*((whole_fourwalls*4)+i+1), y_position),
+                    (tile_size,0,tile_size,tile_size))
+            #Bottom side
+            for i in range(whole_fourwalls):
+                draw_to_screen(sprite_image, (x_position+tile_size+tile_size*i*4,
+                    y_position+tile_size*(height-1)),
+                    (0,tile_size*4,tile_size*4,tile_size))
+            for i in range(int((width-2)-whole_fourwalls*4)):
+                draw_to_screen(sprite_image,
+                    (x_position+tile_size*((whole_fourwalls*4)+i+1),
+                        y_position+tile_size*(height-1)),
+                    (tile_size,tile_size*2,tile_size,tile_size))
+            #Left side
+            whole_fourwalls=floor((height-2)/4)
+            for i in range(whole_fourwalls):
+                draw_to_screen(sprite_image, 
+                    (x_position,y_position+tile_size+tile_size*i*4),
+                    (tile_size*5,0,tile_size,tile_size*4))
+            for i in range(int((height-2)-whole_fourwalls*4)):
+                draw_to_screen(sprite_image,
+                    (x_position, y_position+tile_size*((whole_fourwalls*4)+i+1)),
+                    (0,tile_size,tile_size,tile_size))
+            #Right side
+            for i in range(whole_fourwalls):
+                draw_to_screen(sprite_image, (x_position+tile_size*(width-1),
+                    y_position+tile_size+tile_size*i*4),
+                    (tile_size*4,0,tile_size,tile_size*4))
+            for i in range(int((height-2)-whole_fourwalls*4)):
+                draw_to_screen(sprite_image, (x_position+tile_size*(width-1),
+                    y_position+tile_size*((whole_fourwalls*4)+i+1)),
+                    (tile_size*2,tile_size,tile_size,tile_size))
+
+            #Middle fill
+            #How many rows of 2x2 fill blocks fit
+            double_rows = floor((height-2)/2)
+            #How many extra one-block rows
+            double_columns = floor((width-2)/2)
+            for i in range(double_rows):
+                for j in range(double_columns):
+                    #Draw 2x2 sections
+                    draw_to_screen(sprite_image,
+                        (x_position+tile_size+tile_size*(j*2),
+                            y_position+tile_size+tile_size*(i*2)),
+                        (tile_size*4,tile_size*4,tile_size*2,tile_size*2))
+                #Draw extra bit to fill in the right side- It's a 1x2 chunk of that 2x2
+                if width%2==1:
+                    draw_to_screen(sprite_image,
+                        (x_position+tile_size*(width-2),
+                            y_position+tile_size+tile_size*i*2),
+                        (tile_size*4,tile_size*4,tile_size,tile_size*2))
+            #Draw extra row at bottom
+            if height%2==1:
+                #First if the fillspace is 2 wide, draw in 2x1 chunks
+                for i in range(double_columns):
+                    draw_to_screen(sprite_image,
+                        (x_position+tile_size+tile_size*i*2,
+                            y_position+tile_size*(height-2)),
+                        (tile_size*4,tile_size*4,tile_size*2,tile_size))
+                #If there's another corner bit add a 1x1 there
+                if width%2==1:
+                    draw_to_screen(sprite_image,
+                        (x_position+tile_size*(width-2),
+                            y_position+tile_size*(height-2)),
+                        (tile_size,tile_size,tile_size,tile_size))
+        #JOB DONE
+
+'''
+The last rect in all the blits is the position on the spritesheet of the required chunk.
+Here's a list of all those, for future use, because I couldn't get slick variables to work.
+top_left_corner = (0,0,tile_size,tile_size)
+top_right_corner = (tile_size*2,0,tile_size,tile_size)
+bottom_left_corner = (0,tile_size*2,tile_size,tile_size)
+bottom_right_corner = (tile_size*2,tile_size*2,tile_size,tile_size)
+top_single = (tile_size,0,tile_size,tile_size)
+left_single = (0,tile_size,tile_size,tile_size)
+right_single = (tile_size*2,tile_size,tile_size,tile_size)
+bottom_single = (tile_size,tile_size*2,tile_size,tile_size)
+left_cap = (0,tile_size*3,tile_size,tile_size)
+right_cap = (tile_size*2,tile_size*3,tile_size,tile_size)
+top_cap = (tile_size*3,0,tile_size,tile_size)
+bottom_cap = (tile_size*3,tile_size*2,tile_size,tile_size)
+horizontal_single = (tile_size,tile_size*3,tile_size,tile_size)
+vertical_single = (tile_size*3,tile_size,tile_size,tile_size)
+top_long_wall = (0,tile_size*5,tile_size*4,tile_size)
+left_long_wall = (tile_size*5,0,tile_size,tile_size*4)
+right_long_wall = (tile_size*4,0,tile_size,tile_size*4)
+bottom_long_wall = (0,tile_size*4,tile_size*4,tile_size)
+single_block = (tile_size*3,tile_size*3,tile_size,tile_size)
+single_empty = (tile_size,tile_size,tile_size,tile_size)
+quad_empty = (tile_size*4,tile_size*4,tile_size*2,tile_size*2)
+'''

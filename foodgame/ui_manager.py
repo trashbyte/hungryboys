@@ -3,9 +3,10 @@ from math import floor, ceil
 from .asset_manager import AssetManager
 from .sprite_slicer import SpriteSlicer
 
-## The size of individual UI tiles in pixels.
-TILE_SIZE = 24
-BOTTOM_BAR_HEIGHT = 24
+## The height of the bottom bar, in tiles.
+BOTTOM_BAR_HEIGHT = 2
+## The size of those tiles.
+TILE_SIZE = 12
 
 
 class UIManager():
@@ -23,5 +24,6 @@ class UIManager():
     ## Draws the UI.
     # Which is currently only the bar at the bottom.
     def draw(self):
-        SpriteSlicer.draw(self.game, "bottom-bar",0, self.game.window_size[1]-BOTTOM_BAR_HEIGHT,
-            self.game.window_size[0], BOTTOM_BAR_HEIGHT)
+        SpriteSlicer.draw(self.game, "white-line", 0,
+            self.game.window_size[1]-BOTTOM_BAR_HEIGHT*TILE_SIZE, self.game.window_size[0]/TILE_SIZE,
+            BOTTOM_BAR_HEIGHT)

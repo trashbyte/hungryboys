@@ -22,6 +22,8 @@ class AssetManager():
         # ui
         AssetManager.ui["bottom-bar"] = pygame.image.load("assets/default/ui/bottom-bar.png")
         AssetManager.ui["bottom-bar"].convert()
+        AssetManager.ui["white-line"] = pygame.image.load("assets/default/ui/whiteline-scaling.png")
+        AssetManager.ui["white-line"].convert()
 
 
     ## Get a tile image
