@@ -38,6 +38,9 @@ class UIManager():
             (self.game.window_size[0]-24, self.game.window_size[1]-24),
             (48, 0, 24, 24) )
 
+        standing_on_surf = AssetManager.fonts["monospace"].render(", ".join(self.game.player.get_standing_on()), 1, (255,255,255))
+        self.game.screen.blit(standing_on_surf, (4, self.game.window_size[1]-20))
+
         time_surface = AssetManager.fonts["monospace"].render(
             "%02d:%02d:%02d" % (floor(self.game.game_time / 3600) % 24, floor((self.game.game_time % 3600) / 60), floor(self.game.game_time % 60)),
             1, (255,255,255))

@@ -9,6 +9,11 @@ class EntityBase():
         self.sprite = "uninitialized"
 
 
+    @property
+    def name(self):
+        return "(untitled entity)"
+
+
     def update(self, dt): pass
     def pass_time(self, seconds): pass
 

@@ -14,7 +14,7 @@ class AssetManager():
     def load():
         # tiles
         tile_path = "assets/default/tiles/"
-        tiles_to_load = ["uninitialized", "missing", "player", "grass", "tile-floor"]
+        tiles_to_load = ["uninitialized", "missing", "player", "grass", "tile-floor", "powder-white", "spatula"]
 
         for name in tiles_to_load:
             AssetManager.tiles[name] = pygame.image.load(tile_path+name+".png")
@@ -33,9 +33,10 @@ class AssetManager():
         for key in AssetManager.tiles:
             AssetManager.tiles_scaled[key] = pygame.transform.scale(AssetManager.tiles[key], (size, size))
 
+
     @staticmethod
     def get_tile(name):
-        if AssetManager.tiles_scaled[name]:
+        if name in AssetManager.tiles_scaled:
             return AssetManager.tiles_scaled[name]
         else:
             return AssetManager.tiles_scaled["missing"]
