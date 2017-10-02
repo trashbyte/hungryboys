@@ -2,12 +2,12 @@ import pygame
 
 
 ## Global asset manager
-# @todo TODO: cache tiles at zoom levels to save rescale time.
 class AssetManager():
     tiles = {}
-    tiles_scaled = {}
+    tile_cache = {}
     ui = {}
     fonts = {}
+    size = 16
 
     
     @staticmethod
@@ -30,16 +30,19 @@ class AssetManager():
 
     @staticmethod
     def rescale(size):
-        for key in AssetManager.tiles:
-            AssetManager.tiles_scaled[key] = pygame.transform.scale(AssetManager.tiles[key], (size, size))
+        AssetManager.size = size
+        if size not in AssetManager.tile_cache:
+            AssetManager.tile_cache[size] = {}
+            for key in AssetManager.tiles:
+                AssetManager.tile_cache[size][key] = pygame.transform.scale(AssetManager.tiles[key], (size, size))
 
 
     @staticmethod
     def get_tile(name):
-        if name in AssetManager.tiles_scaled:
-            return AssetManager.tiles_scaled[name]
+        if name in AssetManager.tile_cache[AssetManager.size]:
+            return AssetManager.tile_cache[AssetManager.size][name]
         else:
-            return AssetManager.tiles_scaled["missing"]
+            return AssetManager.tile_cache[AssetManager.size]["missing"]
 
 
     @staticmethod

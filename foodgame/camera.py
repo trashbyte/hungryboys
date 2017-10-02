@@ -11,15 +11,22 @@ class Camera():
         self.game = game
         ## Position of the camera.
         self.pos = Point(90, 90)
-        ## Curent zoom level, expressed as the tile width in pixels.
-        self.zoom = 16
+        ## (internal)
+        self._zoom = 16
         AssetManager.rescale(self.zoom)
+
+
+    ## Curent zoom level, expressed as the tile width in pixels.
+    @property
+    def zoom(self):
+        return self._zoom
 
 
     ## Sets zoom level for camera and rescales tile sprites to match.
     # @param value The new zoom value.
-    def set_zoom(self, value):
-        self.zoom = value
+    @zoom.setter
+    def zoom(self, value):
+        self._zoom = value
         AssetManager.rescale(value)
 
 

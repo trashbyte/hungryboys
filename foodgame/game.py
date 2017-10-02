@@ -85,6 +85,11 @@ class Game():
                 if (event.key == pygame.K_UP or event.key == pygame.K_DOWN
                     or event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT):
                         self.player.move(event.key)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 4:
+                    self.camera.zoom = self.camera.zoom + 1
+                elif event.button == 5 and self.camera.zoom >= 3:
+                    self.camera.zoom = self.camera.zoom - 1
 
 
     ## Updates things that need to change over time in the game.
