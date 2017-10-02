@@ -1,7 +1,11 @@
 import pygame
 
+
+## Global asset manager
+# @todo TODO: cache tiles at zoom levels to save rescale time.
 class AssetManager():
     tiles = {}
+    tiles_scaled = {}
     ui = {}
     fonts = {}
 
@@ -9,15 +13,12 @@ class AssetManager():
     @staticmethod
     def load():
         # tiles
-        AssetManager.tiles["uninitialized"] = pygame.image.load("assets/default/tiles/uninitialized.png")
-        AssetManager.tiles["uninitialized"].convert()
-        AssetManager.tiles["missing"] = pygame.image.load("assets/default/tiles/missing.png")
-        AssetManager.tiles["missing"].convert()
+        tile_path = "assets/default/tiles/"
+        tiles_to_load = ["uninitialized", "missing", "player", "grass", "tile-floor"]
 
-        AssetManager.tiles["player"] = pygame.image.load("assets/default/tiles/player.png")
-        AssetManager.tiles["player"].convert()
-        AssetManager.tiles["grass"] = pygame.image.load("assets/default/tiles/grass.png")
-        AssetManager.tiles["grass"].convert()
+        for name in tiles_to_load:
+            AssetManager.tiles[name] = pygame.image.load(tile_path+name+".png")
+            AssetManager.tiles[name].convert()
 
         # ui
         AssetManager.ui["bottom-bar"] = pygame.image.load("assets/default/ui/bottom-bar.png")
@@ -28,11 +29,16 @@ class AssetManager():
 
 
     @staticmethod
+    def rescale(size):
+        for key in AssetManager.tiles:
+            AssetManager.tiles_scaled[key] = pygame.transform.scale(AssetManager.tiles[key], (size, size))
+
+    @staticmethod
     def get_tile(name):
-        if AssetManager.tiles[name]:
-            return AssetManager.tiles[name]
+        if AssetManager.tiles_scaled[name]:
+            return AssetManager.tiles_scaled[name]
         else:
-            return AssetManager.tiles["missing"]
+            return AssetManager.tiles_scaled["missing"]
 
 
     @staticmethod

@@ -1,4 +1,5 @@
 from foodgame.util import Point
+from .asset_manager import AssetManager
 
 
 ## A structure representing the state of the world viewport.
@@ -9,9 +10,17 @@ class Camera():
         ## The owning Game.
         self.game = game
         ## Position of the camera.
-        self.pos = Point(100, 100)
+        self.pos = Point(90, 90)
         ## Curent zoom level, expressed as the tile width in pixels.
         self.zoom = 16
+        AssetManager.rescale(self.zoom)
+
+
+    ## Sets zoom level for camera and rescales tile sprites to match.
+    # @param value The new zoom value.
+    def set_zoom(self, value):
+        self.zoom = value
+        AssetManager.rescale(value)
 
 
     ## Track the player if they move off-screen.

@@ -8,7 +8,7 @@ class Player():
         self.game = game
         self.entity = EntityLiving(game)
         self.entity.sprite = "player"
-        self.game.world.move(self.entity, Point(110, 110))
+        self.game.world.move(self.entity, Point(103, 103))
 
 
     def update(self, dt):

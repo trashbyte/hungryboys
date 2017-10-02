@@ -8,8 +8,7 @@ from .ui_manager import UIManager
 from .camera import Camera
 from foodgame.util import Point
 from .event_log import EventLog
-
-from foodgame.entities import EntityStatic
+from foodgame.biomes import BiomeTest
 
 
 ## The main game class.
@@ -42,16 +41,11 @@ class Game():
 
         self.camera = Camera(self)
         self.world = World(self)
-        self.player = Player(self) # entity automatically created and added to world
+        biome = BiomeTest()
+        biome.generate(self)
+        self.player = Player(self)
         self.event_log = EventLog(self)
-        self.ui_manager = UIManager(self) # must be initialized after camera        
-
-        # temp: add grass so we can see what we're doing
-        for x in range(25):
-            for y in range(25):
-                e = EntityStatic(self)
-                e.sprite = "grass"
-                self.world.move(e, Point(85+x*2, 85+y*2))
+        self.ui_manager = UIManager(self) # must be initialized after camera
 
         while True:
             now = pygame.time.get_ticks()
